@@ -7,11 +7,12 @@ import { db } from '../firebaseConfig';
 
 const firestoreName = 'notes';
 
-export default function NotesList() {
+export default function NotesList({ navigation }) {
   const [notes, loading, error] = useCollection(collection(db, firestoreName));
   const [inputText, setInputText] = useState("");
 
   async function addNote(inputText) {
+    if (inputText.trim() === "") return;
     const noteData = { text: inputText };
 
     const location = await getLocation();
@@ -61,12 +62,14 @@ export default function NotesList() {
         data={notes?.docs}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.noteItem}>
-            <Text style={styles.noteText}>{item.data().text}</Text>
-            {item.data().address && (
-              <Text style={styles.locationText}>{item.data().address.city}, {item.data().address.street}</Text>
-            )}
-          </View>
+          <Pressable onPress={() => navigation.navigate("NoteDetails", { noteId: item.id, noteData: item.data()})}>
+            <View style={styles.noteItem}>
+              <Text style={styles.noteText}>{item.data().text}</Text>
+              {item.data().address && (
+                <Text style={styles.locationText}>{item.data().address.city}, {item.data().address.street}</Text>
+              )}
+            </View>
+          </Pressable>
         )}
       />
     </View>
