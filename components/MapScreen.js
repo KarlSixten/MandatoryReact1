@@ -1,5 +1,5 @@
 import { View, Text, TextInput, StyleSheet, Modal, Button } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import { useCollection } from 'react-firebase-hooks/firestore';
 import { collection, addDoc, GeoPoint } from 'firebase/firestore';
@@ -10,19 +10,33 @@ import { db } from '../firebaseConfig';
 
 const firestoreName = 'notes';
 
-export default function MapScreen() {
+export default function MapScreen({ route }) {
+    const { locationGeoPoint } = route.params || {};
+    const [region, setRegion] = useState({
+        latitude: 55.7,
+        longitude: 12.6,
+        latitudeDelta: 0.4,
+        longitudeDelta: 0.4,
+    });
+
+    useEffect(() => {
+        if (locationGeoPoint) {
+            setRegion({
+                latitude: locationGeoPoint.latitude,
+                longitude: locationGeoPoint.longitude,
+                latitudeDelta: 0.4,
+                longitudeDelta: 0.4,
+            });
+        }
+    }, [locationGeoPoint]);
+
     const [modalVisible, setModalVisible] = useState(false);
     const [inputText, setInputText] = useState("");
     const [inputLatitude, setInputLatitude] = useState(null);
     const [inputLongitude, setInputLongitude] = useState(null);
     const [notes, loading, error] = useCollection(collection(db, firestoreName));
 
-    const initialRegion = {
-        latitude: 55.7,
-        longitude: 12.6,
-        latitudeDelta: 0.4,
-        longitudeDelta: 0.4
-    };
+    
 
     const handleLongPress = async (event) => {
         const { latitude, longitude } = event.nativeEvent.coordinate;
@@ -69,7 +83,7 @@ export default function MapScreen() {
         <View style={styles.container}>
             <MapView
                 style={{ flex: 1, width: '100%', height: '100%' }}
-                initialRegion={initialRegion}
+                region={region}
                 onLongPress={handleLongPress}
                 key={notes?.docs.length}  // This forces a re-render when the number of docs changes
             >
@@ -89,7 +103,7 @@ export default function MapScreen() {
                                 latitude: geoPoint.latitude,
                                 longitude: geoPoint.longitude
                             }}
-                            title={data.text} // Optional: Display note text
+                            title={data.text}
                         />
                     );
                 })}

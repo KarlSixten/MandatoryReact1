@@ -10,7 +10,10 @@ import { db, storage } from '../firebaseConfig';
 
 export default function NoteDetails({ route, navigation }) {
     const { noteId, noteData } = route.params || {};
-    const [imageUri, setImageUri] = useState(noteData?.imageUri || null);
+
+    const goToMap = () => {
+        navigation.navigate('Map', { locationGeoPoint: noteData.locationGeoPoint });
+    }
 
     const chooseImageSource = () => {
         Alert.alert(
@@ -83,10 +86,12 @@ export default function NoteDetails({ route, navigation }) {
             <Text style={styles.noteText}>{noteData?.text || "No content available"}</Text>
 
             {noteData?.address && (
-                <View style={styles.addressContainer}>
-                    <Text style={styles.addressTitle}>Location:</Text>
-                    <Text style={styles.addressText}>{noteData.address.street}, {noteData.address.city}</Text>
-                </View>
+                <Pressable onPress={goToMap}>
+                    <View style={styles.addressContainer}>
+                        <Text style={styles.addressTitle}>Location:</Text>
+                        <Text style={styles.addressText}>{noteData.address.street}, {noteData.address.city}</Text>
+                    </View>
+                </Pressable>
             )}
 
             {noteData.imageUrl ? (
