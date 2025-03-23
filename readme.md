@@ -8,36 +8,35 @@ This application allows users to take notes with optional location data and imag
 
 ---
 
-### Screenshot 1
-<img src="readme-images/1.png" width="400" />
-**List of notes, along with their location:**
+### List of notes, along with their location:
+<img src="readme-images/1.png" width="300" />
 
 ---
 
-### ![Screenshot 2](readme-images/2.png =400x)
-**Details for a single note which has both image and location:**
+### Details for a single note which has both image and location:
+<img src="readme-images/2.png" width="300" />
 
 ---
 
-### ![Screenshot 3](readme-images/3.png =400x)
-**Editing a notes text:**
+### Editing a notes text:
+<img src="readme-images/3.png" width="300" />
 
 ---
 
-### ![Screenshot 4](readme-images/4.png =400x)
-**Prompt for uploading/chaning image for a note:**
+### Prompt for uploading/chaning image for a note:
+<img src="readme-images/4.png" width="300" />
 
 ---
 
-### ![Screenshot 5](readme-images/5.png =400x)
-**Map with markers for note locations:**
+### Map with markers for note locations:
+<img src="readme-images/5.png" width="300" />
 
 ---
 
-### ![Screenshot 6](readme-images/6.png =400x)
-**Viewing a note on the map:**
+### Viewing a note on the map:
+<img src="readme-images/6.png" width="300" />
 
 ---
 
-### ![Screenshot 7](readme-images/6.png =400x)
-**Adding a new note on the map by long-pressing**
+### Adding a new note on the map by long-pressing:
+<img src="readme-images/7.png" width="300" />
