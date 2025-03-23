@@ -8,7 +8,8 @@ This application allows users to take notes with optional location data and imag
 
 ---
 
-### ![Screenshot 1](readme-images/1.png =400x)
+### Screenshot 1
+<img src="readme-images/1.png" width="400" />
 **List of notes, along with their location:**
 
 ---
