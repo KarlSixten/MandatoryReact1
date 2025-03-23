@@ -1,15 +1,28 @@
-import { View, StyleSheet, Text, Pressable, Alert, Image } from "react-native";
 import { useState } from "react";
+import { View, StyleSheet, Text, Pressable, Alert, Image, Modal, TextInput, Button } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from '../firebaseConfig';
 
-
-
-
 export default function NoteDetails({ route, navigation }) {
     const { noteId, noteData } = route.params || {};
+    const [inputText, setInputText] = useState(noteData.text);
+    const [modalVisible, setModalVisible] = useState(false);
+
+    const handleSaveNote = async () => {
+        if (!noteId) return;
+
+        try {
+            await updateDoc(doc(db, "notes", noteId), {
+                text: inputText
+            });
+            setModalVisible(false)
+            noteData.text = inputText;
+        } catch (error) {
+            console.error("Error updating note:", error);
+        }
+    }
 
     const goToMap = () => {
         navigation.navigate('Map', { locationGeoPoint: noteData.locationGeoPoint });
@@ -83,7 +96,9 @@ export default function NoteDetails({ route, navigation }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.noteText}>{noteData?.text || "No content available"}</Text>
+            <Pressable onPress={() => setModalVisible(true)}>
+                <Text style={styles.noteText}>{noteData?.text || "No content available"}</Text>
+            </Pressable>
 
             {noteData?.address && (
                 <Pressable onPress={goToMap}>
@@ -100,9 +115,31 @@ export default function NoteDetails({ route, navigation }) {
                 <Text style={styles.noImageText}>No image uploaded</Text>
             )}
 
-            <Pressable style={styles.button} onPress={chooseImageSource}>
-                <Text style={styles.buttonText}>{noteData.imageUrl ? "Change Image" : "Add Image"}</Text>
+            <Pressable style={styles.chooseImageButton} onPress={chooseImageSource}>
+                <Text style={styles.chooseImageButtonText}>{noteData.imageUrl ? "Change Image" : "Add Image"}</Text>
             </Pressable>
+            <Modal visible={modalVisible} animationType="slide" transparent>
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContainer}>
+                        <Text style={styles.modalTitle}>Edit Note</Text>
+                        <TextInput
+                            placeholder="Enter note text"
+                            value={inputText}
+                            onChangeText={setInputText}
+                            multiline
+                            style={styles.textInput}
+                        />
+                        <View style={styles.buttonContainer}>
+                            <Pressable style={styles.saveButton} onPress={handleSaveNote}>
+                                <Text style={styles.buttonText}>Save Note</Text>
+                            </Pressable>
+                            <Pressable style={styles.cancelButton} onPress={() => setModalVisible(false)}>
+                                <Text style={styles.buttonText}>Cancel</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 };
@@ -138,14 +175,14 @@ const styles = StyleSheet.create({
     addressText: {
         fontSize: 16,
     },
-    button: {
+    chooseImageButton: {
         backgroundColor: "#007AFF",
         padding: 10,
         borderRadius: 10,
         marginTop: 20,
         alignItems: "center",
     },
-    buttonText: {
+    chooseImageButtonText: {
         color: "white",
         fontSize: 16,
     },
@@ -164,5 +201,71 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginTop: 20,
         fontStyle: "italic"
-    }
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: "rgba(0,0,0,0.5)",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    modalContainer: {
+        width: "85%",
+        backgroundColor: "white",
+        padding: 20,
+        borderRadius: 10,
+        alignItems: "center",
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: "bold",
+        marginBottom: 10,
+    },
+    textInput: {
+        width: "100%",
+        height: 100,
+        borderColor: "gray",
+        borderWidth: 1,
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 15,
+        textAlignVertical: "top",
+    },
+    buttonContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "100%",
+        marginTop: 20,
+        paddingHorizontal: 15,
+    },
+    button: {
+        flex: 1,
+        padding: 12,
+        borderRadius: 5,
+        alignItems: "center",
+        marginHorizontal: 5,
+    },
+    buttonText: {
+        color: "white",
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    saveButton: {
+        flex: 1,
+        backgroundColor: '#007AFF',
+        paddingVertical: 12,
+        borderRadius: 5,
+        marginRight: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    cancelButton: {
+        flex: 1,
+        backgroundColor: '#D32F2F',
+        paddingVertical: 12,
+        borderRadius: 5,
+        marginLeft: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+
 });

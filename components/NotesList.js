@@ -64,7 +64,7 @@ export default function NotesList({ navigation }) {
         renderItem={({ item }) => (
           <Pressable onPress={() => navigation.navigate("NoteDetails", { noteId: item.id, noteData: item.data()})}>
             <View style={styles.noteItem}>
-              <Text style={styles.noteText}>{item.data().text}</Text>
+              <Text style={styles.noteText}>{item.data().text.length > 25 ? item.data().text.slice(0, 25) + "..." : item.data().text}</Text>
               {item.data().address && (
                 <Text style={styles.locationText}>{item.data().address.city}, {item.data().address.street}</Text>
               )}
@@ -79,7 +79,7 @@ export default function NotesList({ navigation }) {
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, marginTop: 50 },
   textInput: { borderWidth: 1, borderColor: '#ccc', padding: 10, marginBottom: 10 },
-  saveButton: { backgroundColor: 'blue', paddingVertical: 12, borderRadius: 8, alignItems: 'center', marginBottom: 20 },
+  saveButton: { backgroundColor: '#007AFF', paddingVertical: 12, borderRadius: 8, alignItems: 'center', marginBottom: 20 },
   saveButtonText: { color: 'white', fontSize: 16, fontWeight: 'bold' },
   noteItem: { padding: 10, borderBottomWidth: 1, borderBottomColor: "#ccc" },
   noteText: { fontSize: 20 },
